@@ -15,6 +15,7 @@ export default function Home() {
   useEffect(() => {
     const fetchAuth = async () => {
       const res = await import('@/auth').then((m) => m.auth());
+      console.log(res);
       setSession(res);
     };
     fetchAuth();
