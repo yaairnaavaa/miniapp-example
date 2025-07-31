@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react';
 import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
 import { MessageSquare, Globe } from 'lucide-react';
 import type { Session } from 'next-auth';
+import { MiniKit } from "@worldcoin/minikit-js";
+import { Contract_Abi } from "@/abi/ContractAbi";
+import { getPublicClient } from '@wagmi/core';
+import { config } from '@/providers/wagmi-config';
 
 interface GuestbookProps {
   isVerify: boolean;
@@ -11,8 +15,8 @@ interface GuestbookProps {
 }
 
 interface GuestbookEntry {
-  id: string;
-  address: string;
+  id: bigint;
+  address: `0x${string}`;
   name: string;
   message: string;
   timestamp: Date;
@@ -24,19 +28,42 @@ export const Guestbook = ({ isVerify, session }: GuestbookProps) => {
   const [entries, setEntries] = useState<GuestbookEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const publicClient = getPublicClient(config);
 
-  // Simular datos iniciales
+  const fetchEntries = async () => {
+    try {
+      const rawEntries = await publicClient.readContract({
+        abi: Contract_Abi,
+        address: "0x3679e60D898D9Db14Cf3cc5342344A81ac7b5711",
+        functionName: "getLatestEntries",
+        args: [],
+      });
+
+      const typedEntries = rawEntries as {
+        id: bigint;
+        author: `0x${string}`;
+        name: string;
+        message: string;
+        timestamp: bigint;
+      }[];
+
+      const parsedEntries: GuestbookEntry[] = typedEntries.map((entry) => ({
+        id: entry.id,
+        address: entry.author,
+        name: entry.name,
+        message: entry.message,
+        timestamp: new Date(Number(entry.timestamp) * 1000),
+      }));
+
+      setEntries(parsedEntries);
+    } catch (error) {
+      console.error("Error fetching entries:", error);
+    }
+  };
+
+  // ✅ Ejecutar al montar el componente
   useEffect(() => {
-    const mockEntries: GuestbookEntry[] = [
-      {
-        id: '1',
-        address: '0x1234...5678',
-        name: 'Alice',
-        message: '¡Hola World Chain!',
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      },
-    ];
-    setEntries(mockEntries);
+    fetchEntries();
   }, []);
 
   const submitMessage = async () => {
@@ -51,19 +78,21 @@ export const Guestbook = ({ isVerify, session }: GuestbookProps) => {
 
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const newEntry: GuestbookEntry = {
-        id: Date.now().toString(),
-        address: session.user.walletAddress, //0xc3fc56b0186eb6cedd813d8e14b1c124316a1acf
-        name: userName,
-        message: userMessage,
-        timestamp: new Date(),
-      };
-      console.log(newEntry);
-      setEntries((prev) => [newEntry, ...prev]);
+      await MiniKit.commandsAsync.sendTransaction({
+        transaction: [
+          {
+            address: "0x3679e60D898D9Db14Cf3cc5342344A81ac7b5711",
+            abi: Contract_Abi,
+            functionName: 'addEntry',
+            args: [userName, userMessage],
+          },
+        ],
+      });
+
       setUserName('');
       setUserMessage('');
       setFeedback('Message added!');
+      await fetchEntries(); // 🔁 Recargar mensajes
     } catch {
       setFeedback('Failed to submit message');
     } finally {
@@ -122,7 +151,7 @@ export const Guestbook = ({ isVerify, session }: GuestbookProps) => {
       </h2>
 
       {entries.map((entry) => (
-        <div key={entry.id} style={{ borderBottom: '1px solid #ccc', marginTop: '1rem', paddingBottom: '1rem' }}>
+        <div key={entry.id.toString()} style={{ borderBottom: '1px solid #ccc', marginTop: '1rem', paddingBottom: '1rem' }}>
           <strong>{entry.name}</strong> — <span style={{ color: '#555' }}>{entry.address}</span>
           <p>{entry.message}</p>
           <small>{formatTimeAgo(entry.timestamp)}</small>
