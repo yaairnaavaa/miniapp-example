@@ -106,19 +106,20 @@ export const Guestbook = () => {
                 type="text"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
-                style={{ display: 'block', marginTop: 4 }}
+                style={{ display: 'block', marginTop: 4, border: 'solid 0.1px black', borderRadius: '5px' }}
               />
             </label>
-            <label>
+            <label style={{marginTop: '5px'}}>
               Message:
               <textarea
                 rows={3}
+                cols={40}
                 value={userMessage}
                 onChange={(e) => setUserMessage(e.target.value)}
-                style={{ display: 'block', marginTop: 4 }}
+                style={{ display: 'block', marginTop: 4, border: 'solid 0.1px black', borderRadius: '5px' }}
               />
             </label>
-            <Button onClick={submitMessage} disabled={isLoading} style={{ marginTop: 8 }}>
+            <Button onClick={submitMessage} disabled={isLoading} style={{ marginTop: '10px' }}>
               {isLoading ? 'Submitting...' : 'Add Message'}
             </Button>
           </div>
