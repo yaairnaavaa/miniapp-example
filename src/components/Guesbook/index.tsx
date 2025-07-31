@@ -17,7 +17,6 @@ interface GuestbookEntry {
 }
 
 export const Guestbook = ({ isVerify }: GuestbookProps) => {
-  const [userAddress, setUserAddress] = useState('');
   const [userName, setUserName] = useState('');
   const [userMessage, setUserMessage] = useState('');
   const [entries, setEntries] = useState<GuestbookEntry[]>([]);
@@ -38,20 +37,6 @@ export const Guestbook = ({ isVerify }: GuestbookProps) => {
     setEntries(mockEntries);
   }, []);
 
-  const connectWallet = async () => {
-    setIsLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const mockAddress = '0x' + Math.random().toString(16).slice(2, 6) + '...' + Math.random().toString(16).slice(2, 6);
-      setUserAddress(mockAddress);
-      setFeedback(`Wallet connected: ${mockAddress}`);
-    } catch {
-      setFeedback('Failed to connect wallet');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const submitMessage = async () => {
     if (!userName.trim() || !userMessage.trim()) {
       setFeedback('Please complete name and message');
@@ -63,7 +48,7 @@ export const Guestbook = ({ isVerify }: GuestbookProps) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const newEntry: GuestbookEntry = {
         id: Date.now().toString(),
-        address: userAddress,
+        address: "0x123...",
         name: userName,
         message: userMessage,
         timestamp: new Date(),
@@ -95,8 +80,6 @@ export const Guestbook = ({ isVerify }: GuestbookProps) => {
 
       {!isVerify && (
         <>
-          <p>Connected as: {userAddress}</p>
-
           <div style={{ marginTop: '1rem' }}>
             <label>
               Name:
