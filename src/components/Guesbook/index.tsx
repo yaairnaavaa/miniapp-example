@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@worldcoin/mini-apps-ui-kit-react';
+import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
 import { MessageSquare, Globe } from 'lucide-react';
 
 interface GuestbookProps {
@@ -17,7 +17,6 @@ interface GuestbookEntry {
 }
 
 export const Guestbook = ({ isVerify }: GuestbookProps) => {
-  const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [userName, setUserName] = useState('');
   const [userMessage, setUserMessage] = useState('');
@@ -45,7 +44,6 @@ export const Guestbook = ({ isVerify }: GuestbookProps) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const mockAddress = '0x' + Math.random().toString(16).slice(2, 6) + '...' + Math.random().toString(16).slice(2, 6);
       setUserAddress(mockAddress);
-      setIsConnected(true);
       setFeedback(`Wallet connected: ${mockAddress}`);
     } catch {
       setFeedback('Failed to connect wallet');
@@ -125,6 +123,7 @@ export const Guestbook = ({ isVerify }: GuestbookProps) => {
           </div>
         </>
       )}
+      {feedback && <LiveFeedback>{feedback}</LiveFeedback>}
 
       <hr style={{ margin: '2rem 0' }} />
 

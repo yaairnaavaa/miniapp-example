@@ -6,9 +6,10 @@ import { UserInfo } from '@/components/UserInfo';
 import { Verify } from '@/components/Verify';
 import { Guestbook } from '@/components/Guesbook';
 import { Marble, TopBar } from '@worldcoin/mini-apps-ui-kit-react';
+import type { Session } from 'next-auth';
 
 export default function Home() {
-  const [session, setSession] = useState<any>(null); // Te sugiero tiparlo si sabes la forma de session
+  const [session, setSession] = useState<Session | null>(null);
   const [isVerify, setIsVerify] = useState<boolean>(false);
 
   useEffect(() => {
