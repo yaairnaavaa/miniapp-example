@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
 import { MessageSquare, Globe } from 'lucide-react';
+import type { Session } from 'next-auth';
 
 interface GuestbookProps {
   isVerify: boolean;
+  session: Session | null;
 }
 
 interface GuestbookEntry {
@@ -16,7 +18,7 @@ interface GuestbookEntry {
   timestamp: Date;
 }
 
-export const Guestbook = ({ isVerify }: GuestbookProps) => {
+export const Guestbook = ({ isVerify, session }: GuestbookProps) => {
   const [userName, setUserName] = useState('');
   const [userMessage, setUserMessage] = useState('');
   const [entries, setEntries] = useState<GuestbookEntry[]>([]);
@@ -42,17 +44,22 @@ export const Guestbook = ({ isVerify }: GuestbookProps) => {
       setFeedback('Please complete name and message');
       return;
     }
+    if (!session?.user.walletAddress) {
+      setFeedback('Wallet address not found');
+      return;
+    }
 
     setIsLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const newEntry: GuestbookEntry = {
         id: Date.now().toString(),
-        address: "0x123...",
+        address: session.user.walletAddress,
         name: userName,
         message: userMessage,
         timestamp: new Date(),
       };
+      console.log(newEntry);
       setEntries((prev) => [newEntry, ...prev]);
       setUserName('');
       setUserMessage('');
@@ -78,7 +85,7 @@ export const Guestbook = ({ isVerify }: GuestbookProps) => {
 
       <p>Verify your account to leave a message for the World Chain community 🌍</p>
 
-      {!isVerify && (
+      {isVerify && (
         <>
           <div style={{ marginTop: '1rem' }}>
             <label>
@@ -90,7 +97,7 @@ export const Guestbook = ({ isVerify }: GuestbookProps) => {
                 style={{ display: 'block', marginTop: 4, border: 'solid 0.1px black', borderRadius: '5px' }}
               />
             </label>
-            <label style={{marginTop: '5px'}}>
+            <label style={{ marginTop: '5px' }}>
               Message:
               <textarea
                 rows={3}
