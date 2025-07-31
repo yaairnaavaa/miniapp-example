@@ -4,10 +4,20 @@ import { UserInfo } from '@/components/UserInfo';
 import { Verify } from '@/components/Verify';
 import { Guestbook } from '@/components/Guesbook';
 import { Marble, TopBar } from '@worldcoin/mini-apps-ui-kit-react';
+import { useEffect, useState } from 'react';
 
 export default async function Home() {
-  const session = await auth();
+  const [session, setSession] = useState<any>(null); // tipa mejor si puedes
+  const [isVerify, setIsVerify] = useState<boolean>(false);
 
+  useEffect(() => {
+    const fetchAuth = async () => {
+      const res = await import('@/auth').then((m) => m.auth());
+      setSession(res);
+    };
+    fetchAuth();
+  }, []);
+  
   return (
     <>
       <Page.Header className="p-0">
@@ -25,8 +35,8 @@ export default async function Home() {
       </Page.Header>
       <Page.Main className="flex flex-col items-center justify-start gap-4 mb-16">
         <UserInfo />
-        <Verify />
-        <Guestbook />
+        <Verify onVerified={setIsVerify}/>
+        <Guestbook isVerify={isVerify}/>
       </Page.Main>
     </>
   );

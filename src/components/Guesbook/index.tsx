@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react';
 import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
 import { MessageSquare, Globe } from 'lucide-react';
 
+interface GuestbookProps {
+  isVerify: boolean;
+}
+
 interface GuestbookEntry {
   id: string;
   address: string;
@@ -12,7 +16,7 @@ interface GuestbookEntry {
   timestamp: Date;
 }
 
-export const Guestbook = () => {
+export const Guestbook = ({ isVerify }: GuestbookProps) => {
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [userName, setUserName] = useState('');
@@ -89,13 +93,9 @@ export const Guestbook = () => {
         <Globe size={28} /> World Chain Guestbook
       </h1>
 
-      <p>Connect your wallet to leave a message for the World Chain community 🌍</p>
+      <p>Verify your account to leave a message for the World Chain community 🌍</p>
 
-      {!isConnected ? (
-        <Button onClick={connectWallet} disabled={isLoading}>
-          {isLoading ? 'Connecting...' : 'Connect Wallet'}
-        </Button>
-      ) : (
+      {!isVerify && (
         <>
           <p>Connected as: {userAddress}</p>
 
@@ -125,8 +125,6 @@ export const Guestbook = () => {
           </div>
         </>
       )}
-
-      {feedback && <LiveFeedback>{feedback}</LiveFeedback>}
 
       <hr style={{ margin: '2rem 0' }} />
 
