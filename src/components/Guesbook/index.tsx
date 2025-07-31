@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
-import { MiniKit, VerificationLevel } from '@worldcoin/minikit-js';
-import { MessageSquare, Wallet, Send, Globe } from 'lucide-react';
+import { MessageSquare, Globe } from 'lucide-react';
 
 interface GuestbookEntry {
   id: string;
