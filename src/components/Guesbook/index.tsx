@@ -61,7 +61,6 @@ export const Guestbook = ({ isVerify, session }: GuestbookProps) => {
     }
   };
 
-  // ✅ Ejecutar al montar el componente
   useEffect(() => {
     fetchEntries();
   }, []);
@@ -71,11 +70,6 @@ export const Guestbook = ({ isVerify, session }: GuestbookProps) => {
       setFeedback('Please complete name and message');
       return;
     }
-    if (!session?.user.walletAddress) {
-      setFeedback('Wallet address not found');
-      return;
-    }
-
     setIsLoading(true);
     try {
       await MiniKit.commandsAsync.sendTransaction({
@@ -99,6 +93,10 @@ export const Guestbook = ({ isVerify, session }: GuestbookProps) => {
       setIsLoading(false);
     }
   };
+
+  function shortenAddress(address: string, chars = 5): string {
+    return `${address.slice(0, 2 + chars)}...${address.slice(-chars)}`;
+  }
 
   const formatTimeAgo = (date: Date) => {
     const now = new Date();
@@ -152,7 +150,7 @@ export const Guestbook = ({ isVerify, session }: GuestbookProps) => {
 
       {entries.map((entry) => (
         <div key={entry.id.toString()} style={{ borderBottom: '1px solid #ccc', marginTop: '1rem', paddingBottom: '1rem' }}>
-          <strong>{entry.name}</strong> — <span style={{ color: '#555' }}>{entry.address}</span>
+          <strong>{entry.name}</strong> — <span style={{ color: '#555' }}>{shortenAddress(entry.address)}</span>
           <p>{entry.message}</p>
           <small>{formatTimeAgo(entry.timestamp)}</small>
         </div>
