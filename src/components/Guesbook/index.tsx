@@ -54,7 +54,7 @@ export const Guestbook = ({ isVerify, session }: GuestbookProps) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const newEntry: GuestbookEntry = {
         id: Date.now().toString(),
-        address: session.user.walletAddress,
+        address: session.user.walletAddress, //0xc3fc56b0186eb6cedd813d8e14b1c124316a1acf
         name: userName,
         message: userMessage,
         timestamp: new Date(),
