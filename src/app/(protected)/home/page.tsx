@@ -1,5 +1,4 @@
 "use client";
-import { auth } from '@/auth';
 import { Page } from '@/components/PageLayout';
 import { UserInfo } from '@/components/UserInfo';
 import { Verify } from '@/components/Verify';

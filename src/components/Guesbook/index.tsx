@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
+import { Button } from '@worldcoin/mini-apps-ui-kit-react';
 import { MessageSquare, Globe } from 'lucide-react';
 
 interface GuestbookProps {
