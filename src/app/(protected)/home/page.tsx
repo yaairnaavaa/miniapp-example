@@ -41,7 +41,7 @@ export default function Home() {
       <Page.Main className="flex flex-col items-center justify-start gap-4 mb-16">
         <UserInfo />
         <Verify onVerified={setIsVerify} />
-        <Guestbook isVerify={isVerify} session={session} />
+        <Guestbook isVerify={isVerify}/>
       </Page.Main>
     </>
   );

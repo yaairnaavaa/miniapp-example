@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
 import { MessageSquare, Globe } from 'lucide-react';
-import type { Session } from 'next-auth';
 import { MiniKit } from "@worldcoin/minikit-js";
 import { Contract_Abi } from "@/abi/ContractAbi";
 import { getPublicClient } from '@wagmi/core';
@@ -11,7 +10,6 @@ import { config } from '@/providers/wagmi-config';
 
 interface GuestbookProps {
   isVerify: boolean;
-  session: Session | null;
 }
 
 interface GuestbookEntry {
@@ -22,7 +20,7 @@ interface GuestbookEntry {
   timestamp: Date;
 }
 
-export const Guestbook = ({ isVerify, session }: GuestbookProps) => {
+export const Guestbook = ({ isVerify}: GuestbookProps) => {
   const [userName, setUserName] = useState('');
   const [userMessage, setUserMessage] = useState('');
   const [entries, setEntries] = useState<GuestbookEntry[]>([]);
